@@ -23,7 +23,10 @@ public class TestController {
     }
 
     @GetMapping("/codeInject")
-    public String codeInject(String filePath) {
+    public String codeInject(@RequestParam String filePath) {
+//        if(!valid_command(filePath)){
+//            return "输入参数不合法!";
+//        }
         String[] cmdList = new String[]{"sh", "-c", "ls -la" + filePath};
         ProcessBuilder builder = new ProcessBuilder(cmdList);
         //如果此属性为true，则随后由该对象的start()方法启动的子进程生成的任何错误输出将与标准输出合并，
@@ -40,5 +43,18 @@ public class TestController {
         return res;
     }
 
+    private static boolean valid_command(String s){
+        if(s.indexOf("&") > 0) return false;
+        if(s.indexOf("|") > 0) return false;
+        if(s.indexOf(";") > 0) return false;
+        if(s.indexOf(">") > 0) return false;
+        if(s.indexOf("<") > 0) return false;
+        if(s.indexOf("'") > 0) return false;
+        if(s.indexOf("\"") > 0) return false;
+        if(s.indexOf("!") > 0) return false;
+        if(s.indexOf("`") > 0) return false;
+        return true;
+
+    }
 
 }
