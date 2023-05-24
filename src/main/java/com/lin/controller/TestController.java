@@ -48,7 +48,7 @@ public class TestController {
 //        if(!valid_command(filePath)){
 //            return "输入参数不合法!";
 //        }
-        String[] cmdList = new String[]{"exe", "/C", "dir " + filePath};
+        String[] cmdList = new String[]{"cmd", "/C", "dir " + filePath};
         ProcessBuilder builder = new ProcessBuilder(cmdList);
         //如果此属性为true，则随后由该对象的start()方法启动的子进程生成的任何错误输出将与标准输出合并，
         //以便可以使用Process.getInputStream()方法读取两者。
@@ -57,7 +57,7 @@ public class TestController {
         String res = "";
         try {
             proces = builder.start();
-            res = IOUtils.toString(proces.getInputStream(), StandardCharsets.UTF_8);
+            res = IOUtils.toString(proces.getInputStream(), "GBK");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
