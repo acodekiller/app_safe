@@ -22,8 +22,8 @@ public class TestController {
         return str;
     }
 
-    @GetMapping("/codeInject")
-    public String codeInject(@RequestParam String filePath) {
+    @GetMapping("/linux/codeInject")
+    public String codeInjectLinux(@RequestParam String filePath) {
 //        if(!valid_command(filePath)){
 //            return "输入参数不合法!";
 //        }
@@ -43,6 +43,28 @@ public class TestController {
         return res;
     }
 
+    @GetMapping("/win/codeInject")
+    public String codeInjectWin(@RequestParam String filePath) {
+//        if(!valid_command(filePath)){
+//            return "输入参数不合法!";
+//        }
+        String[] cmdList = new String[]{"exe", "/C", "dir " + filePath};
+        ProcessBuilder builder = new ProcessBuilder(cmdList);
+        //如果此属性为true，则随后由该对象的start()方法启动的子进程生成的任何错误输出将与标准输出合并，
+        //以便可以使用Process.getInputStream()方法读取两者。
+        builder.redirectErrorStream(true);
+        Process proces = null;
+        String res = "";
+        try {
+            proces = builder.start();
+            res = IOUtils.toString(proces.getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+
+
     private static boolean valid_command(String s){
         if(s.indexOf("&") > 0) return false;
         if(s.indexOf("|") > 0) return false;
@@ -53,8 +75,10 @@ public class TestController {
         if(s.indexOf("\"") > 0) return false;
         if(s.indexOf("!") > 0) return false;
         if(s.indexOf("`") > 0) return false;
+        if(s.indexOf("%") > 0) return false;
         return true;
 
     }
 
 }
+//输入参数：C:%26calc
