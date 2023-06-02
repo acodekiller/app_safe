@@ -1,8 +1,11 @@
 package com.lin.controller;
 
 import com.lin.pojo.User;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -11,8 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * description:
@@ -128,5 +135,63 @@ public class TestController {
         return "";
     }
 
+    private Boolean isValidFolder(String folder){
+        if(folder.contains("folder1") || folder.contains("folder2")){
+            return true;
+        }
+//        Set<String> set = new HashSet<String>(){{
+//            add("folder1");
+//            add("folder2");
+//        }};
+//        if(set.contains(folder)){
+//            return true;
+//        }
+        return false;
+    }
+
+    @PostMapping("/upLoad")
+    public String upLoadFile(@RequestParam MultipartFile multipartFile,@RequestParam String folder){
+        if (isValidFolder(folder) && !multipartFile.isEmpty()){
+            try {
+                //上传的文件需要保存的路径和文件名称，路径需要存在，否则报错
+                multipartFile.transferTo(new File("D:/test/" + folder + "/"+ multipartFile.getOriginalFilename()));
+            } catch (IllegalStateException | IOException e){
+                e.printStackTrace();
+                return "上传失败";
+            }
+        } else {
+            return "请选择文件并且输入合法的目录：folder1 或 folder2";
+        }
+        return "上传成功";
+    }
+
+    @PostMapping("/upLoadWithCanonicalPath")
+    public String upLoadFileWithCanonicalPath(@RequestParam MultipartFile multipartFile,@RequestParam String folder) throws IOException {
+        File file = new File("D:/test/" + folder + "/" + multipartFile.getOriginalFilename());
+        //对文件路径进行归一化
+        String canonicalPath = file.getCanonicalPath();
+        if (isValidFolder(canonicalPath) && !multipartFile.isEmpty()){
+            try {
+                //上传的文件需要保存的路径和文件名称，路径需要存在，否则报错
+                multipartFile.transferTo(file);
+            } catch (IllegalStateException | IOException e){
+                e.printStackTrace();
+                return "上传失败";
+            }
+        } else {
+            return "请选择文件并且输入合法的目录：folder1 或 folder2";
+        }
+        return "上传成功";
+    }
 }
+
+
+
+
+
 //命令注入输入参数：C:%26calc
+
+
+
+
+//content-type为 multipart/form-data 或 multipart/mixed stream
