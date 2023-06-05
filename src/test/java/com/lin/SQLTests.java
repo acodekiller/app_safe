@@ -16,7 +16,7 @@ class SQLTests {
     private UserMapper userMapper;
 
     @Test
-    void testXSQL() {
+    void testXSQL3333() {
         String username = "admin' or '1' = '1' limit 1 #";           //admin' or '1' = '1' limit 1 #
         String password = "123456";           //123456
 
@@ -48,7 +48,7 @@ class SQLTests {
         //编写SQL语句
         String sql = "SELECT * FROM user WHERE username='"+username+"' AND pssword = '"+password;
 
-//        StringEscapeUtils.escapeSql(sql);
+//        String s = StringEscapeUtils.escapeSql(sql);
 
         //4、执行SQL语句
         ResultSet resultSet=statement.executeQuery(sql);

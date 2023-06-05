@@ -1,6 +1,9 @@
 package com.lin.controller;
 
+import com.lin.mapper.UserMapper;
+import com.lin.pojo.User;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -22,10 +25,32 @@ import java.nio.charset.StandardCharsets;
 @RestController
 public class TestController {
 
-    @GetMapping("/testCommand")
-    public String login(@RequestParam String str) {
-        return str;
+    @Autowired
+    private UserMapper userMapper;
+
+    @GetMapping("/testXSQL")
+    public String testXSQL(@RequestBody UserDTO userDTO){
+        User user1 = userMapper.selectUser2(userDTO.getUsername(), userDTO.getPassword());
+        if(user1 != null){
+            return "【提示】登录成功！" + user1;
+        }
+        return "【错误】登录失败！";
     }
+    //admin' or '1' = '1' limit 1 #
+
+    @GetMapping("/testXSQL2")
+    public String testXSQL2(@RequestBody UserDTO userDTO){
+        User user1 = userMapper.selectUser(userDTO.getUsername(), userDTO.getPassword());
+        if(user1 != null){
+            return "【提示】登录成功！" + user1;
+        }
+        return "【错误】登录失败！";
+    }
+
+//    @GetMapping("/testCommand")
+//    public String login(@RequestParam String str) {
+//        return str;
+//    }
 
     @GetMapping("/linux/codeInject")
     public String codeInjectLinux(@RequestParam String filePath) {
@@ -82,7 +107,6 @@ public class TestController {
         if(s.indexOf("`") > 0) return false;
         if(s.indexOf("%") > 0) return false;
         return true;
-
     }
 
     private final static String USERNAME = "admin";
@@ -176,6 +200,37 @@ public class TestController {
         }
         return "上传成功";
     }
+
+
+    public static class UserDTO{
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        @Override
+        public String toString() {
+            return "UserDTO{" +
+                    "username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
+    }
+
 }
 
 
