@@ -19,7 +19,7 @@
     </select>
 
     <select id="selectUserByOrder" resultMap="BaseResultMap">
-        select * from user order by '${order}'
+        select * from user order by ${order}
     </select>
 
 </mapper>

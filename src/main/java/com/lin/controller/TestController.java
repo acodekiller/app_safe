@@ -110,7 +110,7 @@ public class TestController {
     }
 
     private final static String USERNAME = "admin";
-    private final static String PASSWORD = "root";
+    private final static String PASSWORD = "123";
 
     @PostMapping("/login")
     public void login(HttpServletRequest request,HttpServletResponse response) throws Exception{
